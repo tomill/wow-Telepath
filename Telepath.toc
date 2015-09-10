@@ -1,7 +1,7 @@
 ## Interface: 60200
 ## Version: 1.0.0
 ## Title: Telepath
-## Notes: Display normal message as "raid warning"
+## Notes: Display chat message as "raid warning"
 ## Author: Tomill
 ## SavedVariables: TelepathDB
 

@@ -25,7 +25,7 @@ function addon:OnInitialize()
 
                     nickname = {
                         order = 4,
-                        name = "Nickname filter:",
+                        name = "Nickname filter (optional)",
                         type = "input",
                         multiline = true,
                         set = function(info, v)
@@ -103,9 +103,9 @@ local function displayMessage(...)
     -- ignore same message
     local display = format("%s: %s", name, msg)
     if latest == display then
-    	return
+        return
     else
-    	latest = display
+        latest = display
     end
     
     -- then fire
