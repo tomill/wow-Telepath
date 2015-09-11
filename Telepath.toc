@@ -1,5 +1,5 @@
 ## Interface: 60200
-## Version: 1.0.0
+## Version: 1.0.2
 ## Title: Telepath
 ## Notes: Display chat message as "raid warning"
 ## Author: Tomill

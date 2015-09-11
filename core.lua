@@ -1,69 +1,103 @@
 local addon = LibStub("AceAddon-3.0"):NewAddon("Telepath", "LibSink-2.0")
 
+local option_catch = {
+    type = "group",
+    name = "Hook message",
+    args = {
+        channel = {
+            order = 1,
+            type = "multiselect",
+            name = "Channel",
+            desc = "reacts only checked channel.",
+            values = {
+                raid = "Raid/Instance",
+                party = "Party",
+                guild = "Guild",
+            },
+            set = function(info, k, v) addon.db.profile.channel[k] = v end,
+            get = function(info, k) return addon.db.profile.channel[k] end,
+        },
+
+        nickname = {
+            order = 4,
+            type = "input",
+            name = "Nickname to highlight (optional)",
+            multiline = true,
+            set = function(info, v)
+                addon.db.profile.nickname = v
+                addon.db.profile.nickname_list = {}
+                for nick in string.gmatch(v, "%S+") do
+                    addon.db.profile.nickname_list[strlower(nick)] = true
+                end
+            end, 
+            get = function(info) return addon.db.profile.nickname end,
+        },
+        nickname_hint = {
+            order = 5,
+            type = "description",
+            name = [[
+Tip: Set your raid leader name or no-mic player name.
+(1 nickname 1 line)
+]],
+            fontSize = "medium",
+        },
+        
+        keyword = {
+            order = 7,
+            type = "input",
+            name = "Keyword filter list (optional)",
+            multiline = true,
+            set = function(info, v)
+                addon.db.profile.keyword = v
+                addon.db.profile.keyword_list = {}
+                for word in string.gmatch(v, "%S+") do
+                    addon.db.profile.keyword_list[strlower(word)] = true
+                end
+            end, 
+            get = function(info) return addon.db.profile.keyword end,
+        },
+        keyword_hint = {
+            order = 8,
+            type = "description",
+            name = [[
+Tip: set "INC" or "help" or "boring"
+(1 keyword 1 line)
+            ]],
+            fontSize = "medium",
+        },
+    }
+}
+
 function addon:OnInitialize()
     local options = {
-       type = "group",
-       args = {
-            catch = {
-                type = "group",
-                name = "Capture message",
-                order = 1,
-                args = {
-                    channel = {
-                        name = "Channel",
-                        desc = "reacts only checked channel.",
-                        order = 2,
-                        type = "multiselect",
-                        values = {
-                            raid = "Raid/Instance",
-                            party = "Party",
-                            guild = "Guild",
-                        },
-                        set = function(info, k, v) addon.db.profile.channel[k] = v end, 
-                        get = function(info, k) return addon.db.profile.channel[k] end,
-                    },
-
-                    nickname = {
-                        order = 4,
-                        name = "Nickname filter (optional)",
-                        type = "input",
-                        multiline = true,
-                        set = function(info, v)
-                            addon.db.profile.nickname = v
-                            addon.db.profile.nickname_list = {}
-                            for nick in string.gmatch(v, "%S+") do
-                                addon.db.profile.nickname_list[strlower(nick)] = true
-                            end
-                        end, 
-                        get = function(info) return addon.db.profile.nickname end,
-                    },
-                    nickname_hint = {
-                        order = 5,
-                        name = "\nEmpty: reacts to every player message.\n\nIf you set, addon reacts only their message. (1 nickname 1 line)",
-                        type = "description",
-                    },
-                }
-            },
-            output = {
-                
-            },
-       }
+        type = "group",
+        args = {
+            catch = {},
+            output = {},
+        }
     }
     
+    options.args.catch = option_catch
+    options.args.catch.order = 1
+
     options.args.output = self:GetSinkAce3OptionsDataTable()
     options.args.output.name = "Output style"
     options.args.output.order = 2
 
     self.db = LibStub("AceDB-3.0"):New(self.name .. "DB", {
         profile = {
-            ["channel"] = {},
+            ["channel"] = {["raid"] = true},
+            ["nickname"] = "",
             ["nickname_list"] = {},
+            ["keyword"] = "inc\nhelp",
+            ["keyword_list"] = {["inc"] = true, ["help"] = true},
             ["sink20OutputSink"] = "RaidWarning",
         }
     })
     
     local config = LibStub("AceConfig-3.0")
     local dialog = LibStub("AceConfigDialog-3.0")
+    
     config:RegisterOptionsTable(self.name, options)
     dialog:AddToBlizOptions(self.name)
     
@@ -71,15 +105,16 @@ function addon:OnInitialize()
     dialog:AddToBlizOptions(self.name .. "Profiles", "Profiles", self.name)
     
     self:SetSinkStorage(self.db.profile)
+    
+    self.latest = ""
 end
 
-local latest = ""
 local function displayMessage(...)
-    local _, event, msg, _, _, _, name = ...
+    local self, event, msg, fullname, _, _,name = ...
     
+    -- channel check 
     local channels = {
         ["CHAT_MSG_SAY"] = "party", -- for debug
-        
         ["CHAT_MSG_GUILD"] = "guild",
         ["CHAT_MSG_PARTY"] = "party",
         ["CHAT_MSG_PARTY_LEADER"] = "party",
@@ -88,28 +123,49 @@ local function displayMessage(...)
         ["CHAT_MSG_INSTANCE_CHAT"] = "raid",
         ["CHAT_MSG_INSTANCE_CHAT_LEADER"] = "raid",
     }
-    
-    -- channel filter
     if not addon.db.profile.channel[ channels[event] ] then
         return
     end
     
     -- nickname filter
-    if (next(addon.db.profile.nickname_list) and
-        not addon.db.profile.nickname_list[ strlower(name) ]) then
+    local nickname_filter = addon.db.profile.keyword == ""
+    if (addon.db.profile.nickname ~= "") then
+        if (addon.db.profile.nickname_list[ strlower(name) ]) then
+            nickname_filter = true
+        else
+            nickname_filter = false
+        end
+    end
+    
+    -- keyword filter
+    local keyword_filter = addon.db.profile.nickname == ""
+    if (addon.db.profile.keyword ~= "") then
+        keyword_filter = false
+        for word in pairs(addon.db.profile.keyword_list) do
+            for item in msg:gmatch("[^%s]+") do
+                if strlower(item) == word then
+                    keyword_filter = true
+                    break
+                end
+            end
+        end
+    end
+    
+    -- condition "OR"
+    if (not nickname_filter and not keyword_filter) then
         return
     end
     
     -- ignore same message
     local display = format("%s: %s", name, msg)
-    if latest == display then
+    if addon.latest == display then
         return
     else
-        latest = display
+        addon.latest = display
     end
     
     -- then fire
-    addon:Pour(format("%s: %s", name, msg), 1, 1, 0, nil, 24, "OUTLINE", false)
+    addon:Pour(display, 1, 1, 0, nil, 24, "OUTLINE", false)
 end
 
 function addon:OnEnable()
