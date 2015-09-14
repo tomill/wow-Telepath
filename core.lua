@@ -60,7 +60,7 @@ Tip: Set your raid leader name or no-mic player name.
             order = 8,
             type = "description",
             name = [[
-Tip: set "INC" or "help" or "boring"
+Tip: set "INC" or "help" or your name 
 (1 keyword 1 line)
             ]],
             fontSize = "medium",
@@ -89,7 +89,7 @@ function addon:OnInitialize()
             ["channel"] = {["raid"] = true},
             ["nickname"] = "",
             ["nickname_list"] = {},
-            ["keyword"] = "inc\nhelp",
+            ["keyword"] = "inc\nincoming\nhelp\nsafe",
             ["keyword_list"] = {["inc"] = true, ["help"] = true},
             ["sink20OutputSink"] = "RaidWarning",
         }
