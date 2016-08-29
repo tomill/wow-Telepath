@@ -5,5 +5,6 @@ This addon shows highlight chat message. This would be useful to catch some impo
 Options:
 
 - Select channels: Guild, Party or Instance(Raid)
-- Nickname filter (optional)
-- Several output pattern: "Raid Warning" style(default), Floating combat text style and more.
+- Nickname (optional)
+- Keyword filter (optional)
+- Output pattern: "Raid Warning" style(default), Floating combat text style and more.
