@@ -7,12 +7,13 @@ local option_catch = {
         channel = {
             order = 1,
             type = "multiselect",
-            name = "Channel",
+            name = "Source channel",
             desc = "reacts only checked channel.",
             values = {
                 raid = "Raid/Instance",
                 party = "Party",
                 guild = "Guild",
+                say = "Say (for a test)",
             },
             set = function(info, k, v) addon.db.profile.channel[k] = v end,
             get = function(info, k) return addon.db.profile.channel[k] end,
@@ -21,7 +22,7 @@ local option_catch = {
         nickname = {
             order = 4,
             type = "input",
-            name = "Nickname to highlight (optional)",
+            name = "Nickname always highlight",
             multiline = true,
             set = function(info, v)
                 addon.db.profile.nickname = v
@@ -36,7 +37,7 @@ local option_catch = {
             order = 5,
             type = "description",
             name = [[
-Tip: Set your raid leader name or no-mic player name.
+Tip: Set your raid leader name or no-VC player name.
 (1 nickname 1 line)
 ]],
             fontSize = "medium",
@@ -45,7 +46,7 @@ Tip: Set your raid leader name or no-mic player name.
         keyword = {
             order = 7,
             type = "input",
-            name = "Keyword filter list (optional)",
+            name = "Keyword list (optional)",
             multiline = true,
             set = function(info, v)
                 addon.db.profile.keyword = v
@@ -60,7 +61,7 @@ Tip: Set your raid leader name or no-mic player name.
             order = 8,
             type = "description",
             name = [[
-Tip: set "INC" or "help" or your name 
+Tip: set "inc" or "help" or your name. 
 (1 keyword 1 line)
             ]],
             fontSize = "medium",
@@ -114,7 +115,7 @@ local function displayMessage(...)
     
     -- channel check 
     local channels = {
-        ["CHAT_MSG_SAY"] = "party", -- for debug
+        ["CHAT_MSG_SAY"] = "say",
         ["CHAT_MSG_GUILD"] = "guild",
         ["CHAT_MSG_PARTY"] = "party",
         ["CHAT_MSG_PARTY_LEADER"] = "party",
@@ -141,12 +142,11 @@ local function displayMessage(...)
     local keyword_filter = addon.db.profile.nickname == ""
     if (addon.db.profile.keyword ~= "") then
         keyword_filter = false
+        local msg_lc = strlower(msg)
         for word in pairs(addon.db.profile.keyword_list) do
-            for item in msg:gmatch("[^%s]+") do
-                if strlower(item) == word then
-                    keyword_filter = true
-                    break
-                end
+            if msg_lc:find(strlower(word), 1, true) then
+                keyword_filter = true
+                break
             end
         end
     end
@@ -169,8 +169,7 @@ local function displayMessage(...)
 end
 
 function addon:OnEnable()
-    -- ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", displayMessage) -- for debug
-    
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", displayMessage) -- for debug
     ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", displayMessage) 
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", displayMessage)
