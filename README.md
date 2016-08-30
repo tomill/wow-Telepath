@@ -1,10 +1,12 @@
 # Telepath
 
-This addon shows highlight chat message. This would be useful to catch some important message up in combat.
+Display normal message as "raid warning".
+
+This would be useful to avoid missing some important messages in combat.
 
 Options:
 
-- Select channels: Guild, Party or Instance(Raid)
-- Nickname (optional)
-- Keyword filter (optional)
-- Output pattern: "Raid Warning" style(default), Floating combat text style and more.
+- Select source channels: Guild, Party or Instance(Raid)
+- specific Nickname (set no-VC member name)
+- Keyword filter (set "inc" or something)
+- Output pattern: "Raid Warning style"(default), Floating combat text style and more.
