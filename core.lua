@@ -13,7 +13,12 @@ local option_catch = {
                 raid = "Raid/Instance",
                 party = "Party",
                 guild = "Guild",
-                say = "Say (for a test)",
+                say = "Say (for your test)",
+                ch1 = "/1 General",
+                ch2 = "/2 Trade",
+                ch3 = "/3 LocalDefense",
+                ch4 = "/4 usually LfG",
+                chx = "Custom channels",
             },
             set = function(info, k, v) addon.db.profile.channel[k] = v end,
             get = function(info, k) return addon.db.profile.channel[k] end,
@@ -111,10 +116,11 @@ function addon:OnInitialize()
 end
 
 local function displayMessage(...)
-    local self, event, msg, fullname, _, _,name = ...
+    local self, event, msg, fullname, _, _,name, _, _, ch_no = ...
     
     -- channel check 
     local channels = {
+        ["CHAT_MSG_CHANNEL"] = "chx",
         ["CHAT_MSG_SAY"] = "say",
         ["CHAT_MSG_GUILD"] = "guild",
         ["CHAT_MSG_PARTY"] = "party",
@@ -124,7 +130,13 @@ local function displayMessage(...)
         ["CHAT_MSG_INSTANCE_CHAT"] = "raid",
         ["CHAT_MSG_INSTANCE_CHAT_LEADER"] = "raid",
     }
-    if not addon.db.profile.channel[ channels[event] ] then
+    
+    local ch_key = channels[event]
+    if event == "CHAT_MSG_CHANNEL" and ch_no < 5 then
+        ch_key = "ch" .. ch_no
+    end
+    
+    if not addon.db.profile.channel[ ch_key ] then
         return
     end
     
@@ -169,6 +181,7 @@ local function displayMessage(...)
 end
 
 function addon:OnEnable()
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", displayMessage) -- for debug
     ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", displayMessage) 
