@@ -13,6 +13,7 @@ local option_catch = {
                 raid = "Raid/Instance",
                 party = "Party",
                 guild = "Guild",
+                officer = "Officer",
                 say = "Say (for your test)",
                 ch1 = "/1 General",
                 ch2 = "/2 Trade",
@@ -123,6 +124,7 @@ local function displayMessage(...)
         ["CHAT_MSG_CHANNEL"] = "chx",
         ["CHAT_MSG_SAY"] = "say",
         ["CHAT_MSG_GUILD"] = "guild",
+        ["CHAT_MSG_OFFICER"] = "officer",
         ["CHAT_MSG_PARTY"] = "party",
         ["CHAT_MSG_PARTY_LEADER"] = "party",
         ["CHAT_MSG_RAID"] = "raid",
@@ -184,6 +186,7 @@ function addon:OnEnable()
     ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", displayMessage) -- for debug
     ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", displayMessage)
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", displayMessage) 
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", displayMessage)
