@@ -118,7 +118,8 @@ function addon:OnInitialize()
 end
 
 local function displayMessage(...)
-    local self, event, msg, fullname, _, _,name, _, _, ch_no = ...
+    local self, event, msg, fullname, _, _, _, _, _, ch_no = ...
+    local name = Ambiguate(fullname, "short")
     
     -- channel check 
     local channels = {
@@ -142,45 +143,38 @@ local function displayMessage(...)
     if not addon.db.profile.channel[ ch_key ] then
         return
     end
-    
-    -- nickname filter
-    local nickname_filter = addon.db.profile.keyword == ""
+
+    local on = false
     if (addon.db.profile.nickname ~= "") then
         if (addon.db.profile.nickname_list[ strlower(name) ]) then
-            nickname_filter = true
-        else
-            nickname_filter = false
+            on = true
         end
     end
-    
-    -- keyword filter
-    local keyword_filter = addon.db.profile.nickname == ""
+
     if (addon.db.profile.keyword ~= "") then
-        keyword_filter = false
         local msg_lc = strlower(msg)
         for word in pairs(addon.db.profile.keyword_list) do
             if msg_lc:find(strlower(word), 1, true) then
-                keyword_filter = true
+                on = true
                 break
             end
         end
     end
-    
-    -- condition "OR"
-    if (not nickname_filter and not keyword_filter) then
+
+    if (not on) then
         return
     end
     
     -- ignore same message
-    local display = format("%s: %s", name, msg)
-    if addon.latest == display then
+    local text = format("%s: %s", name, msg)
+    if addon.latest == text then
         return
     else
-        addon.latest = display
+        addon.latest = text
     end
     
     -- then fire
-    addon:Pour(display, 1, 1, 0, nil, 24, "OUTLINE", false)
+    addon:Pour(text, 1, 1, 0, nil, 24, "OUTLINE", false)
 end
 
 function addon:OnEnable()
