@@ -1,3 +1,4 @@
+-- "Telepath" addon by tomill
 local addon = LibStub("AceAddon-3.0"):NewAddon("Telepath", "LibSink-2.0")
 
 local option_catch = {
