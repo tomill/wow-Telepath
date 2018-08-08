@@ -1,16 +1,12 @@
-.PHONY: help dist
+ARTIFACT=$(shell basename `pwd`)
 
-ADDON_NAME=$(shell basename `pwd`)
+dist: $(ARTIFACT).zip
 
-help:
-	cat Makefile
-
-$(ADDON_NAME).zip: dist
-
-dist:
-	rm -f $(ADDON_NAME).zip
+.PHONY: $(ARTIFACT).zip
+$(ARTIFACT).zip:
+	@-rm -f $@
 	cd `mktemp -d` && \
-		mkdir $(ADDON_NAME); \
-		cp -r $(CURDIR)/*.{toc,lua,xml} $(CURDIR)/Libs $(ADDON_NAME)/; \
-		zip -r $(CURDIR)/$(ADDON_NAME).zip $(ADDON_NAME) -x "*.DS_Store" "_MACOSX"
-	unzip -l $(ADDON_NAME).zip
+		mkdir $(ARTIFACT); \
+		cp -r $(CURDIR)/*.{toc,lua,xml} $(CURDIR)/Libs $(ARTIFACT)/; \
+		zip -q -r $(CURDIR)/$(ARTIFACT).zip $(ARTIFACT) -x "*.DS_Store" "_MACOSX"
+	unzip -l $@
