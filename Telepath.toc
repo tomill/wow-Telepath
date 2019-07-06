@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Version: @project-version@
 ## Title: Telepath
 ## Notes: Display specific chat message as "raid warning"
