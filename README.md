@@ -1,6 +1,6 @@
 # Telepath
 
-Display specific chat message as "raid warning".
+Display some chat message as "raid warning".
 
 This would be useful to avoid missing some important messages in combat.
 

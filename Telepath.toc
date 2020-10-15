@@ -1,7 +1,7 @@
-## Interface: 80200
+## Interface: 90001
 ## Version: @project-version@
 ## Title: Telepath
-## Notes: Display specific chat message as "raid warning"
+## Notes: Display some chat message as "raid warning"
 ## Author: Tomill
 ## SavedVariables: TelepathDB
 
