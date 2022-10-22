@@ -2,6 +2,8 @@
 
 Display some chat message as "raid warning".
 
+![](images/1.jpg)
+
 This would be useful to avoid missing some important messages in combat.
 
 Options:
