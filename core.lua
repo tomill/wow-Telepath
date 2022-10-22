@@ -37,7 +37,7 @@ local option_catch = {
                 for nick in string.gmatch(v, "%S+") do
                     addon.db.profile.nickname_list[strlower(nick)] = true
                 end
-            end, 
+            end,
             get = function(info) return addon.db.profile.nickname end,
         },
         nickname_hint = {
@@ -49,7 +49,7 @@ Tip: Set your raid leader name or no-VC player name.
 ]],
             fontSize = "medium",
         },
-        
+
         keyword = {
             order = 7,
             type = "input",
@@ -61,14 +61,14 @@ Tip: Set your raid leader name or no-VC player name.
                 for word in string.gmatch(v, "%S+") do
                     addon.db.profile.keyword_list[strlower(word)] = true
                 end
-            end, 
+            end,
             get = function(info) return addon.db.profile.keyword end,
         },
         keyword_hint = {
             order = 8,
             type = "description",
             name = [[
-Tip: set "inc" or "help" or your name. 
+Tip: set "inc" or "help" or your name.
 (1 keyword 1 line)
             ]],
             fontSize = "medium",
@@ -84,7 +84,7 @@ function addon:OnInitialize()
             output = {},
         }
     }
-    
+
     options.args.catch = option_catch
     options.args.catch.order = 1
 
@@ -102,26 +102,26 @@ function addon:OnInitialize()
             ["sink20OutputSink"] = "RaidWarning",
         }
     })
-    
+
     local config = LibStub("AceConfig-3.0")
     local dialog = LibStub("AceConfigDialog-3.0")
-    
+
     config:RegisterOptionsTable(self.name, options)
     dialog:AddToBlizOptions(self.name)
-    
+
     config:RegisterOptionsTable(self.name .. "Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
     dialog:AddToBlizOptions(self.name .. "Profiles", "Profiles", self.name)
-    
+
     self:SetSinkStorage(self.db.profile)
-    
+
     self.latest = ""
 end
 
 local function displayMessage(...)
-    local self, event, msg, fullname, _, _, _, _, _, ch_no = ...
+    local _, event, msg, fullname, _, _, _, _, _, ch_no = ...
     local name = Ambiguate(fullname, "short")
-    
-    -- channel check 
+
+    -- channel check
     local channels = {
         ["CHAT_MSG_CHANNEL"] = "chx",
         ["CHAT_MSG_SAY"] = "say",
@@ -134,12 +134,12 @@ local function displayMessage(...)
         ["CHAT_MSG_INSTANCE_CHAT"] = "raid",
         ["CHAT_MSG_INSTANCE_CHAT_LEADER"] = "raid",
     }
-    
+
     local ch_key = channels[event]
     if event == "CHAT_MSG_CHANNEL" and ch_no < 5 then
         ch_key = "ch" .. ch_no
     end
-    
+
     if not addon.db.profile.channel[ ch_key ] then
         return
     end
@@ -164,7 +164,7 @@ local function displayMessage(...)
     if (not on) then
         return
     end
-    
+
     -- ignore same message
     local text = format("%s: %s", name, msg)
     if addon.latest == text then
@@ -172,7 +172,7 @@ local function displayMessage(...)
     else
         addon.latest = text
     end
-    
+
     -- then fire
     addon:Pour(text, 1, 1, 0, nil, 24, "OUTLINE", false)
 end
@@ -182,7 +182,7 @@ function addon:OnEnable()
     ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", displayMessage) -- for debug
     ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", displayMessage)
-    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", displayMessage) 
+    ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", displayMessage)
     ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", displayMessage)
