@@ -15,6 +15,5 @@ enable-toc-creation: yes
 
 ignore:
  - README.md
- - Makefile
  - images
 
