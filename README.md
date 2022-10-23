@@ -1,4 +1,4 @@
-# Telepath
+# Warcraft Addon: Telepath
 
 Display some chat message as "raid warning".
 
