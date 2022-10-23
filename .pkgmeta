@@ -11,6 +11,7 @@ externals:
   libs/LibSink-2.0: https://repos.wowace.com/wow/libsink-2-0/trunk/LibSink-2.0
 
 enable-nolib-creation: no
+enable-toc-creation: yes
 
 ignore:
  - README.md
