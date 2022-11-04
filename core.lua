@@ -35,7 +35,7 @@ local option_catch = {
                 addon.db.profile.nickname = v
                 addon.db.profile.nickname_list = {}
                 for nick in string.gmatch(v, "%S+") do
-                    addon.db.profile.nickname_list[strlower(nick)] = true
+                    addon.db.profile.nickname_list[string.lower(nick)] = true
                 end
             end,
             get = function(info) return addon.db.profile.nickname end,
@@ -59,7 +59,7 @@ Tip: Set your raid leader name or no-VC player name.
                 addon.db.profile.keyword = v
                 addon.db.profile.keyword_list = {}
                 for word in string.gmatch(v, "%S+") do
-                    addon.db.profile.keyword_list[strlower(word)] = true
+                    addon.db.profile.keyword_list[string.lower(word)] = true
                 end
             end,
             get = function(info) return addon.db.profile.keyword end,
@@ -146,15 +146,15 @@ local function displayMessage(...)
 
     local on = false
     if (addon.db.profile.nickname ~= "") then
-        if (addon.db.profile.nickname_list[ strlower(name) ]) then
+        if (addon.db.profile.nickname_list[ string.lower(name) ]) then
             on = true
         end
     end
 
     if (addon.db.profile.keyword ~= "") then
-        local msg_lc = strlower(msg)
+        local msg_lc = string.lower(msg)
         for word in pairs(addon.db.profile.keyword_list) do
-            if msg_lc:find(strlower(word), 1, true) then
+            if msg_lc:find(string.lower(word), 1, true) then
                 on = true
                 break
             end
@@ -166,7 +166,7 @@ local function displayMessage(...)
     end
 
     -- ignore same message
-    local text = format("%s: %s", name, msg)
+    local text = string.format("%s: %s", name, msg)
     if addon.latest == text then
         return
     else
