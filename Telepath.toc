@@ -1,7 +1,6 @@
 ## Interface: 110000
-## Interface-Wrath: 40400
-## Interface-BCC: 20504
-## Interface-Classic: 11404
+## Interface-Cata: 40400
+## Interface-Vanilla: 11503
 ## Version: @project-version@
 ## Title: Telepath
 ## Notes: Display some chat message as "raid warning"
