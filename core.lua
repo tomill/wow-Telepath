@@ -26,6 +26,16 @@ local option_catch = {
             get = function(info, k) return addon.db.profile.channel[k] end,
         },
 
+        all_messages = {
+            order = 2,
+            type = "toggle",
+            name = "All Messages",
+            desc = "displays all messages from the selected channels",
+            width = "full",
+            set = function(info, v) addon.db.profile.all_messages = v end,
+            get = function(info) return addon.db.profile.all_messages end,
+        },
+
         nickname = {
             order = 4,
             type = "input",
@@ -95,6 +105,7 @@ function addon:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New(self.name .. "DB", {
         profile = {
             ["channel"] = {["raid"] = true},
+            ["all_messages"] = false,
             ["nickname"] = "",
             ["nickname_list"] = {},
             ["keyword"] = "inc\nincoming\nhelp\nsafe",
@@ -159,6 +170,10 @@ local function displayMessage(...)
                 break
             end
         end
+    end
+
+    if (addon.db.profile.all_messages) then
+        on = true
     end
 
     if (not on) then
