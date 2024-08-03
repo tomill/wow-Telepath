@@ -35,6 +35,14 @@ local option_catch = {
             set = function(info, v) addon.db.profile.all_messages = v end,
             get = function(info) return addon.db.profile.all_messages end,
         },
+        all_messages_hint = {
+            order = 3,
+            type = "description",
+            name = [[
+Or messages with the following conditions:
+            ]],
+            fontSize = "medium",
+        },
 
         nickname = {
             order = 4,
