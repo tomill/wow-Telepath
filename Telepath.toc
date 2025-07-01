@@ -1,5 +1,5 @@
 ## Interface: 110107
-## Interface-Cata: 40402
+## Interface-Cata: 50500
 ## Interface-Vanilla: 11507
 ## Version: @project-version@
 ## Title: Telepath
