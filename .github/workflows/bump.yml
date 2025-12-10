@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: clone
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Update TOC Interface version
-        uses: p3lim/toc-interface-updater@v3
+        uses: p3lim/toc-interface-updater@v4
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Update Interface version
