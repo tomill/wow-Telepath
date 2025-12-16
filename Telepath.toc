@@ -1,4 +1,4 @@
-## Interface: 110205, 110207
+## Interface: 110207
 ## Interface-Cata: 40402
 ## Interface-Vanilla: 11508
 ## Version: @project-version@
