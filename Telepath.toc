@@ -1,6 +1,6 @@
-## Interface: 120007
+## Interface: 120105
 ## Interface-Cata: 40402
-## Interface-Vanilla: 11508
+## Interface-Vanilla: 11509
 ## IconTexture: Interface\Icons\Spell_arcane_mindmastery
 ## Version: @project-version@
 ## Title: Telepath
